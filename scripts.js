@@ -24,74 +24,190 @@
  */
 
 const FRESH_PRINCE_URL =
-  "https://upload.wikimedia.org/wikipedia/en/3/33/Fresh_Prince_S1_DVD.jpg";
+	"https://upload.wikimedia.org/wikipedia/en/3/33/Fresh_Prince_S1_DVD.jpg";
 const CURB_POSTER_URL =
-  "https://m.media-amazon.com/images/M/MV5BZDY1ZGM4OGItMWMyNS00MDAyLWE2Y2MtZTFhMTU0MGI5ZDFlXkEyXkFqcGdeQXVyMDc5ODIzMw@@._V1_FMjpg_UX1000_.jpg";
+	"https://m.media-amazon.com/images/M/MV5BZDY1ZGM4OGItMWMyNS00MDAyLWE2Y2MtZTFhMTU0MGI5ZDFlXkEyXkFqcGdeQXVyMDc5ODIzMw@@._V1_FMjpg_UX1000_.jpg";
 const EAST_LOS_HIGH_POSTER_URL =
-  "https://static.wikia.nocookie.net/hulu/images/6/64/East_Los_High.jpg";
+	"https://static.wikia.nocookie.net/hulu/images/6/64/East_Los_High.jpg";
 
 // This is an array of strings (TV show titles)
 let titles = [
-  "Fresh Prince of Bel Air",
-  "Curb Your Enthusiasm",
-  "East Los High",
+	"Fresh Prince of Bel Air",
+	"Curb Your Enthusiasm",
+	"East Los High",
+];
+// Game data snapshot 4/17/2026
+let games = [
+	{
+		active_players: 8043520,
+	},
+	{
+		name: "Counter-Strike 2",
+		developer: "Valve",
+		desc: "Competitive First Person Shooter",
+		img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/730/header.jpg?t=1749053861",
+		players: {
+			current: 894607,
+			peak_daily: 1399032,
+			peak_all_time: 1862531,
+		},
+	},
+	{
+		name: "Dota 2",
+		developer: "Valve",
+		desc: "Multiplayer Online Battle Arena",
+		img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/570/header.jpg?t=1769535998",
+		players: {
+			current: 364079,
+			peak_daily: 626460,
+			peak_all_time: 1295114,
+		},
+	},
+	{
+		name: "FiveM",
+		developer: "CFX.re",
+		desc: "Grand Theft Auto V Multiplayer Mod",
+		img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2676230/9e8a2df18bfdd24267aefa6d3e14778c2ecb1708/header.jpg?t=1769533323",
+		players: {
+			current: 165810,
+			peak_daily: 192794,
+			peak_all_time: 215265,
+		},
+	},
+	{
+		name: "PUBG: BATTLEGROUNDS",
+		developer: "PUBG Corporation",
+		desc: "Free-to-play Battle Royal",
+		img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/578080/841ea38bc58cabb70aef65365cf50bc2d79329d9/header.jpg?t=1775635041",
+		players: {
+			current: 124774,
+			peak_daily: 864354,
+			peak_all_time: 3257248,
+		},
+	},
+	{
+		name: "Slay the Spire 2",
+		developer: "Mega Crit",
+		desc: "Roguelike deck builder",
+		img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2868840/b0958d387dc366211e0f353443710cfcf9fdb020/header.jpg?t=1773851542",
+		players: {
+			current: 120581,
+			peak_daily: 286089,
+			peak_all_time: 574638,
+		},
+	},
+	{
+		name: "Windrose",
+		developer: "Kraken Express",
+		desc: "PvE Pirate survival adventure",
+		img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3041230/7e838d87d787735d5d29d72777c5ee55653dfb2b/header.jpg?t=1776158614",
+		players: {
+			current: 112651,
+			peak_daily: 135700,
+			peak_all_time: 135700,
+		},
+	},
+	{
+		name: "Rust",
+		developer: "Facepunch Studios",
+		desc: "Crafting Open World Survival",
+		img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/252490/header.jpg?t=1776257232",
+		players: {
+			current: 107222,
+			peak_daily: 158709,
+			peak_all_time: 262284,
+		},
+	},
+	{
+		name: "Marvel Rivals",
+		developer: "NetEase Games",
+		desc: "Super Hero Team-based PVP Shooter",
+		img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2767030/975bfe11c5b6843c866587138aec911964b60c85/header.jpg?t=1776420047",
+		players: {
+			current: 116125,
+			peak_daily: 116199,
+			peak_all_time: 644269,
+		},
+	},
+	{
+		name: "Crimson Desert",
+		developer: "Pearl Abyss",
+		desc: "Open World Action Adventure",
+		img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3321460/abd7dbdeaede8b6c9a6d40bf116ff2b883f2dd45/header.jpg?t=1776322395",
+		players: {
+			current: 93744,
+			peak_daily: 112952,
+			peak_all_time: 276261,
+		},
+	},
+	{
+		name: "ARC Raiders",
+		developer: "Embark Studios",
+		desc: "Multiplayer extraction adventure",
+		img: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1808500/04baafaf64a5aa5f46ecda5d71889a4848dc0628/header.jpg?t=1772007651",
+		players: {
+			current: 81258,
+			peak_daily: 98844,
+			peak_all_time: 481966,
+		},
+	},
 ];
 // Your final submission should have much more data than this, and
 // you should use more than just an array of strings to store it all.
 
 // This function adds cards the page to display the data in the array
 function showCards() {
-  const cardContainer = document.getElementById("card-container");
-  cardContainer.innerHTML = "";
-  const templateCard = document.querySelector(".card");
+	const cardContainer = document.getElementById("card-container");
+	cardContainer.innerHTML = "";
+	const templateCard = document.querySelector(".card");
 
-  for (let i = 0; i < titles.length; i++) {
-    let title = titles[i];
+	for (let i = 0; i < titles.length; i++) {
+		let title = titles[i];
 
-    // This part of the code doesn't scale very well! After you add your
-    // own data, you'll need to do something totally different here.
-    let imageURL = "";
-    if (i == 0) {
-      imageURL = FRESH_PRINCE_URL;
-    } else if (i == 1) {
-      imageURL = CURB_POSTER_URL;
-    } else if (i == 2) {
-      imageURL = EAST_LOS_HIGH_POSTER_URL;
-    }
+		// This part of the code doesn't scale very well! After you add your
+		// own data, you'll need to do something totally different here.
+		let imageURL = "";
+		if (i == 0) {
+			imageURL = FRESH_PRINCE_URL;
+		} else if (i == 1) {
+			imageURL = CURB_POSTER_URL;
+		} else if (i == 2) {
+			imageURL = EAST_LOS_HIGH_POSTER_URL;
+		}
 
-    const nextCard = templateCard.cloneNode(true); // Copy the template card
-    editCardContent(nextCard, title, imageURL); // Edit title and image
-    cardContainer.appendChild(nextCard); // Add new card to the container
-  }
+		const nextCard = templateCard.cloneNode(true); // Copy the template card
+		editCardContent(nextCard, title, imageURL); // Edit title and image
+		cardContainer.appendChild(nextCard); // Add new card to the container
+	}
 }
 
 function editCardContent(card, newTitle, newImageURL) {
-  card.style.display = "block";
+	card.style.display = "block";
 
-  const cardHeader = card.querySelector("h2");
-  cardHeader.textContent = newTitle;
+	const cardHeader = card.querySelector("h2");
+	cardHeader.textContent = newTitle;
 
-  const cardImage = card.querySelector("img");
-  cardImage.src = newImageURL;
-  cardImage.alt = newTitle + " Poster";
+	const cardImage = card.querySelector("img");
+	cardImage.src = newImageURL;
+	cardImage.alt = newTitle + " Poster";
 
-  // You can use console.log to help you debug!
-  // View the output by right clicking on your website,
-  // select "Inspect", then click on the "Console" tab
-  console.log("new card:", newTitle, "- html: ", card);
+	// You can use console.log to help you debug!
+	// View the output by right clicking on your website,
+	// select "Inspect", then click on the "Console" tab
+	console.log("new card:", newTitle, "- html: ", card);
 }
 
 // This calls the addCards() function when the page is first loaded
 document.addEventListener("DOMContentLoaded", showCards);
 
 function quoteAlert() {
-  console.log("Button Clicked!");
-  alert(
-    "I guess I can kiss heaven goodbye, because it got to be a sin to look this good!",
-  );
+	console.log("Button Clicked!");
+	alert(
+		"I guess I can kiss heaven goodbye, because it got to be a sin to look this good!",
+	);
 }
 
 function removeLastCard() {
-  titles.pop(); // Remove last item in titles array
-  showCards(); // Call showCards again to refresh
+	titles.pop(); // Remove last item in titles array
+	showCards(); // Call showCards again to refresh
 }
