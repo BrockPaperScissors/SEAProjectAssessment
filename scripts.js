@@ -161,40 +161,50 @@ function showCards() {
 	cardContainer.innerHTML = "";
 	const templateCard = document.querySelector(".card");
 
-	for (let i = 0; i < titles.length; i++) {
-		let title = titles[i];
-
-		// This part of the code doesn't scale very well! After you add your
-		// own data, you'll need to do something totally different here.
-		let imageURL = "";
-		if (i == 0) {
-			imageURL = FRESH_PRINCE_URL;
-		} else if (i == 1) {
-			imageURL = CURB_POSTER_URL;
-		} else if (i == 2) {
-			imageURL = EAST_LOS_HIGH_POSTER_URL;
-		}
-
+	// Make a card for each game in the data array
+	// Start at 1 because index 0 is used for misc data
+	for (let i = 1; i < games.length; i++) {
 		const nextCard = templateCard.cloneNode(true); // Copy the template card
-		editCardContent(nextCard, title, imageURL); // Edit title and image
+		editCardContent(nextCard, games[i]); // Edit title and image
 		cardContainer.appendChild(nextCard); // Add new card to the container
 	}
 }
 
-function editCardContent(card, newTitle, newImageURL) {
+function editCardContent(card, gameInfo) {
 	card.style.display = "block";
 
 	const cardHeader = card.querySelector("h2");
-	cardHeader.textContent = newTitle;
+	cardHeader.textContent = gameInfo.name;
 
 	const cardImage = card.querySelector("img");
-	cardImage.src = newImageURL;
-	cardImage.alt = newTitle + " Poster";
+	cardImage.src = gameInfo.img;
+	cardImage.alt = gameInfo.name + " Poster";
+
+	const cardBulletPoints = card.querySelectorAll(".card-data");
+
+	for (let i = 0; i < cardBulletPoints.length; i++) {
+		switch (i) {
+			case 0:
+				cardBulletPoints[i].textContent =
+					"Current: " + gameInfo.players.current;
+				break;
+			case 1:
+				cardBulletPoints[i].textContent =
+					"Daily Peak: " + gameInfo.players.peak_daily;
+				break;
+			case 2:
+				cardBulletPoints[i].textContent =
+					"All Time Peak: " + gameInfo.players.peak_all_time;
+				break;
+			default:
+				break;
+		}
+	}
 
 	// You can use console.log to help you debug!
 	// View the output by right clicking on your website,
 	// select "Inspect", then click on the "Console" tab
-	console.log("new card:", newTitle, "- html: ", card);
+	console.log("new card:", gameInfo.name, "- html: ", card);
 }
 
 // This calls the addCards() function when the page is first loaded
@@ -208,6 +218,6 @@ function quoteAlert() {
 }
 
 function removeLastCard() {
-	titles.pop(); // Remove last item in titles array
+	games.pop(); // Remove last item in titles array
 	showCards(); // Call showCards again to refresh
 }
