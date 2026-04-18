@@ -23,20 +23,10 @@
  *
  */
 
-const FRESH_PRINCE_URL =
-	"https://upload.wikimedia.org/wikipedia/en/3/33/Fresh_Prince_S1_DVD.jpg";
-const CURB_POSTER_URL =
-	"https://m.media-amazon.com/images/M/MV5BZDY1ZGM4OGItMWMyNS00MDAyLWE2Y2MtZTFhMTU0MGI5ZDFlXkEyXkFqcGdeQXVyMDc5ODIzMw@@._V1_FMjpg_UX1000_.jpg";
-const EAST_LOS_HIGH_POSTER_URL =
-	"https://static.wikia.nocookie.net/hulu/images/6/64/East_Los_High.jpg";
-
-// This is an array of strings (TV show titles)
-let titles = [
-	"Fresh Prince of Bel Air",
-	"Curb Your Enthusiasm",
-	"East Los High",
-];
 // Game data snapshot 4/17/2026
+let sortOptionsActive = false;
+let sortOptions = document.getElementById("sort-options-container");
+
 let games = [
 	{
 		active_players: 8043520,
@@ -180,6 +170,9 @@ function editCardContent(card, gameInfo) {
 	cardImage.src = gameInfo.img;
 	cardImage.alt = gameInfo.name + " Poster";
 
+	const cardDescription = card.querySelector(".game-description");
+	cardDescription.textContent = gameInfo.desc;
+
 	const cardBulletPoints = card.querySelectorAll(".card-data");
 
 	for (let i = 0; i < cardBulletPoints.length; i++) {
@@ -195,6 +188,15 @@ function editCardContent(card, gameInfo) {
 			case 2:
 				cardBulletPoints[i].textContent =
 					"All Time Peak: " + gameInfo.players.peak_all_time;
+				break;
+			case 3:
+				let percentage =
+					(gameInfo.players.current / games[0].active_players) * 100;
+				percentage = percentage.toFixed(2);
+
+				console.log(percentage);
+				cardBulletPoints[i].textContent =
+					"% of Current Steam Users: " + String(percentage);
 				break;
 			default:
 				break;
@@ -220,4 +222,16 @@ function quoteAlert() {
 function removeLastCard() {
 	games.pop(); // Remove last item in titles array
 	showCards(); // Call showCards again to refresh
+}
+
+function displaySortOptions() {
+	if (sortOptionsActive) {
+		sortOptions.classList.add("inactive-display");
+		sortOptionsActive = false;
+	} else {
+		sortOptionsActive = true;
+		sortOptions.classList.remove("inactive-display");
+	}
+
+	console.log("Button clicked");
 }

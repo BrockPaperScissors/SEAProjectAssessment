@@ -1,10 +1,10 @@
 <!doctype html>
 <html>
 	<head>
-		<title>LA TV Shows | Home</title>
+		<title>Steam Current Player Data | Home</title>
 		<meta name="description" content="A Catalog of Shows Set in Los Angeles" />
 		<link rel="stylesheet" href="style.css" />
-		<script type="text/javascript" src="scripts.js"></script>
+		<script type="text/javascript" src="scripts.js" defer></script>
 	</head>
 
 	<body>
@@ -16,17 +16,38 @@
 			<div class="card-content">
 				<h2>Game</h2>
 				<img src="" alt="TV Show Poster" />
+				<p class="game-description"></p>
 				<h3>Players:</h3>
 				<ul>
 					<li class="card-data">Bullet Point 1</li>
 					<li class="card-data">Bullet Point 2</li>
 					<li class="card-data">Bullet Point 3</li>
+					<li class="card-data">Bullet Point 3</li>
 				</ul>
 			</div>
 		</div>
 		<div class="footer">
-			<button onclick="quoteAlert()">Get A Quote!</button>
-			<button onclick="removeLastCard()">Remove A Card!</button>
+			<div
+				id="sort-options-container"
+				class="footer-sort-options inactive-display"
+			>
+				<nav>
+					<ul class="footer-buttons">
+						<li>
+							<button>By Current Players</button>
+						</li>
+						<li>
+							<button>By Daily Peak</button>
+						</li>
+						<li>
+							<button>By All-time Peak</button>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<button onclick="displaySortOptions()">Sort Games</button>
+			<!-- <button onclick="removeLastCard()">Sort by Daily Player Count</button>
+			<button onclick="removeLastCard()">Sort by All Time Player Count</button> -->
 		</div>
 	</body>
 </html>

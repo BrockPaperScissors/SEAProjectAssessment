@@ -57,6 +57,8 @@ body {
 
 .footer {
 	display: flex;
+	flex-direction: column;
+	align-items: center;
 	justify-content: center;
 	background-color: rgba(0, 0, 0, 0.3);
 	padding: 10px;
@@ -83,4 +85,13 @@ ul {
 
 .card-data {
 	list-style: none;
+}
+
+.footer-buttons {
+	display: flex;
+	flex-direction: row;
+}
+
+.inactive-display {
+	display: none;
 }
