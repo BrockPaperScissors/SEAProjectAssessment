@@ -23,10 +23,11 @@
  *
  */
 
-// Game data snapshot 4/17/2026
 let sortOptionsActive = false;
-let sortOptions = document.getElementById("sort-options-container");
+let sortOptions = [];
+let sortOptionsButtons = [];
 
+// Game data snapshot 4/17/2026
 let games = [
 	{
 		active_players: 8043520,
@@ -146,7 +147,7 @@ let games = [
 // you should use more than just an array of strings to store it all.
 
 // This function adds cards the page to display the data in the array
-function showCards() {
+function showCards(inGames) {
 	const cardContainer = document.getElementById("card-container");
 	cardContainer.innerHTML = "";
 	const templateCard = document.querySelector(".card");
@@ -155,7 +156,7 @@ function showCards() {
 	// Start at 1 because index 0 is used for misc data
 	for (let i = 1; i < games.length; i++) {
 		const nextCard = templateCard.cloneNode(true); // Copy the template card
-		editCardContent(nextCard, games[i]); // Edit title and image
+		editCardContent(nextCard, inGames[i]); // Edit title and image
 		cardContainer.appendChild(nextCard); // Add new card to the container
 	}
 }
@@ -194,7 +195,6 @@ function editCardContent(card, gameInfo) {
 					(gameInfo.players.current / games[0].active_players) * 100;
 				percentage = percentage.toFixed(2);
 
-				console.log(percentage);
 				cardBulletPoints[i].textContent =
 					"% of Current Steam Users: " + String(percentage);
 				break;
@@ -206,23 +206,42 @@ function editCardContent(card, gameInfo) {
 	// You can use console.log to help you debug!
 	// View the output by right clicking on your website,
 	// select "Inspect", then click on the "Console" tab
-	console.log("new card:", gameInfo.name, "- html: ", card);
+	// console.log("new card:", gameInfo.name, "- html: ", card);
 }
 
 // This calls the addCards() function when the page is first loaded
-document.addEventListener("DOMContentLoaded", showCards);
+document.addEventListener("DOMContentLoaded", function () {
+	showCards(games);
+	sortOptions = document.getElementById("sort-options-container");
+	sortOptionsButtons = document.getElementsByClassName("sort-by-button");
 
-function quoteAlert() {
-	console.log("Button Clicked!");
-	alert(
-		"I guess I can kiss heaven goodbye, because it got to be a sin to look this good!",
-	);
-}
-
-function removeLastCard() {
-	games.pop(); // Remove last item in titles array
-	showCards(); // Call showCards again to refresh
-}
+	for (let i = 0; i < sortOptionsButtons.length; i++) {
+		switch (i) {
+			case 0:
+				sortOptionsButtons[i].addEventListener("click", sortGames);
+				sortOptionsButtons[i].sortParam = "players.current";
+				sortOptionsButtons[i].gamePlayerData = games;
+				break;
+			case 1:
+				sortOptionsButtons[i].addEventListener("click", sortGames);
+				sortOptionsButtons[i].sortParam = "players.peak_daily";
+				sortOptionsButtons[i].gamePlayerData = games;
+				break;
+			case 2:
+				sortOptionsButtons[i].addEventListener("click", sortGames);
+				sortOptionsButtons[i].sortParam = "players.peak_all_time";
+				sortOptionsButtons[i].gamePlayerData = games;
+				break;
+			case 3:
+				sortOptionsButtons[i].addEventListener("click", sortGames);
+				sortOptionsButtons[i].sortParam = "clear";
+				sortOptionsButtons[i].gamePlayerData = games;
+				break;
+			default:
+				break;
+		}
+	}
+});
 
 function displaySortOptions() {
 	if (sortOptionsActive) {
@@ -232,6 +251,92 @@ function displaySortOptions() {
 		sortOptionsActive = true;
 		sortOptions.classList.remove("inactive-display");
 	}
+}
 
-	console.log("Button clicked");
+function sortGames() {
+	let inSortBy = event.currentTarget.sortParam;
+	let inGameData = [...event.currentTarget.gamePlayerData];
+	let tempGames = [];
+
+	console.log(inGameData);
+
+	switch (event.currentTarget.sortParam) {
+		// sort by descending current player count - highest to lowest
+		case "players.current":
+			for (let i = 1; i < inGameData.length; i++) {
+				console.log(event.currentTarget.gamePlayerData[i].players.current);
+				tempGames[i] = inGameData[i];
+
+				for (let j = i + 1; j < inGameData.length; j++) {
+					if (tempGames[i].players.current < inGameData[j].players.current) {
+						console.log(
+							tempGames[i].name + " is less than " + inGameData[j].name,
+						);
+						let temp = tempGames[i];
+						tempGames[i] = inGameData[j];
+						inGameData[j] = temp;
+					} else {
+						continue;
+					}
+				}
+			}
+			break;
+
+		// Sort by descending daily peak player count - highest to lowest
+		case "players.peak_daily":
+			for (let i = 1; i < inGameData.length; i++) {
+				console.log(inGameData[i].players.peak_daily);
+				tempGames[i] = inGameData[i];
+
+				for (let j = i + 1; j < inGameData.length; j++) {
+					if (
+						tempGames[i].players.peak_daily < inGameData[j].players.peak_daily
+					) {
+						console.log(
+							tempGames[i].name + " is less than " + inGameData[j].name,
+						);
+						let temp = tempGames[i];
+						tempGames[i] = inGameData[j];
+						inGameData[j] = temp;
+					} else {
+						continue;
+					}
+				}
+			}
+			break;
+
+		//Sort by descending all time peak player count - highest to lowest
+		case "players.peak_all_time":
+			tempGames[0] = games[0];
+			for (let i = 1; i < inGameData.length; i++) {
+				console.log(inGameData[i].players.peak_all_time);
+				tempGames[i] = inGameData[i];
+
+				for (let j = i + 1; j < inGameData.length; j++) {
+					if (
+						tempGames[i].players.peak_all_time <
+						inGameData[j].players.peak_all_time
+					) {
+						console.log(
+							tempGames[i].name + " is less than " + inGameData[j].name,
+						);
+						let temp = tempGames[i];
+						tempGames[i] = inGameData[j];
+						inGameData[j] = temp;
+					} else {
+						continue;
+					}
+				}
+			}
+			break;
+		default:
+			tempGames[0] = inGameData[0];
+			for (let i = 1; i < inGameData.length; i++) {
+				tempGames[i] = inGameData[i];
+			}
+			break;
+	}
+	console.log(tempGames);
+
+	showCards(tempGames);
 }

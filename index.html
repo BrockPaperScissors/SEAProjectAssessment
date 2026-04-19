@@ -2,20 +2,45 @@
 <html>
 	<head>
 		<title>Steam Current Player Data | Home</title>
-		<meta name="description" content="A Catalog of Shows Set in Los Angeles" />
+		<meta
+			name="description"
+			content="A Catalog of Games and their current players collected from SteamDB."
+		/>
 		<link rel="stylesheet" href="style.css" />
 		<script type="text/javascript" src="scripts.js" defer></script>
 	</head>
 
 	<body>
 		<header class="main-header">
-			<h1 class="title">Top Played Steam Games</h1>
+			<h1 class="title">Steam Games & Player Count Data</h1>
 		</header>
+		<div class="sort-bar">
+			<button onclick="displaySortOptions()">Sort Games</button>
+
+			<div id="sort-options-container" class="inactive-display">
+				<nav>
+					<ul class="sort-buttons">
+						<li class="sort-by-button">
+							<button>By Current Players</button>
+						</li>
+						<li class="sort-by-button">
+							<button>By Daily Peak</button>
+						</li>
+						<li class="sort-by-button">
+							<button>By All-time Peak</button>
+						</li>
+						<li class="sort-by-button">
+							<button>Clear Preferences</button>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
 		<div id="card-container"></div>
 		<div class="card" style="display: none">
 			<div class="card-content">
 				<h2>Game</h2>
-				<img src="" alt="TV Show Poster" />
+				<img src="" alt="Game Cover Art" />
 				<p class="game-description"></p>
 				<h3>Players:</h3>
 				<ul>
@@ -25,29 +50,6 @@
 					<li class="card-data">Bullet Point 3</li>
 				</ul>
 			</div>
-		</div>
-		<div class="footer">
-			<div
-				id="sort-options-container"
-				class="footer-sort-options inactive-display"
-			>
-				<nav>
-					<ul class="footer-buttons">
-						<li>
-							<button>By Current Players</button>
-						</li>
-						<li>
-							<button>By Daily Peak</button>
-						</li>
-						<li>
-							<button>By All-time Peak</button>
-						</li>
-					</ul>
-				</nav>
-			</div>
-			<button onclick="displaySortOptions()">Sort Games</button>
-			<!-- <button onclick="removeLastCard()">Sort by Daily Player Count</button>
-			<button onclick="removeLastCard()">Sort by All Time Player Count</button> -->
 		</div>
 	</body>
 </html>
