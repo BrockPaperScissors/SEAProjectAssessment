@@ -23,14 +23,15 @@
  *
  */
 
-let sortOptionsActiveFlag = false;
-let clearContainerFlag = false;
-let sortOptions;
-let sortOptionsButtons;
-let linkPanel;
-let favoritedGames;
+// Globally declared variables
+let sortOptionsActiveFlag = false; // Used to check if sorting options are active/inactive
+let clearContainerFlag = false; // Used to check if card links are active/inactive
+let sortOptions; // Holds sorting options container
+let sortOptionsButtons; // Holds sorting option buttons
+let linkPanel; // Holds card-related links
 
 // Game data snapshot 4/17/2026
+// Collected manually from https://steamdb.info/
 let games = [
 	{
 		active_players: 8043520,
@@ -172,32 +173,59 @@ let games = [
 	},
 ];
 
+// container for games "favorited" by the user
+let favoritedGames = [];
+
+// include meta data buffer for consistent game data operations
+favoritedGames[0] = games[0];
+
 //This calls the addCards() function when the page is first loaded
 // Added: Once page is loaded -- safely adds event listeners to the sorting buttons
 document.addEventListener("DOMContentLoaded", function () {
+	// Initially draw all game cards
 	showCards(games);
-	sortOptions = document.querySelector(".sort-options-container");
-	sortOptionsButtons = document.querySelectorAll(".sort-by-button");
-	// linkPanel = document.getElementById();
 
+	// Store reference to sorting options container
+	sortOptions = document.querySelector(".sort-options-container");
+
+	// Store reference to sorting option buttons
+	sortOptionsButtons = document.querySelectorAll(".sort-by-button");
+
+	// For each sorting option button
+	// Could move this to event handler function so that it doesnt bog down
+	// Initial loading performance.
 	for (let i = 0; i < sortOptionsButtons.length; i++) {
 		switch (i) {
+			// Set first button to sort by current players
 			case 0:
 				sortOptionsButtons[i].addEventListener("click", sortGames);
 				sortOptionsButtons[i].sortParam = "players.current";
 				sortOptionsButtons[i].gamePlayerData = games;
 				break;
+
+			// Set second button to issue sort by daily peak
 			case 1:
 				sortOptionsButtons[i].addEventListener("click", sortGames);
 				sortOptionsButtons[i].sortParam = "players.peak_daily";
 				sortOptionsButtons[i].gamePlayerData = games;
 				break;
+
+			// Set third button to issue sort by all time peak
 			case 2:
 				sortOptionsButtons[i].addEventListener("click", sortGames);
 				sortOptionsButtons[i].sortParam = "players.peak_all_time";
 				sortOptionsButtons[i].gamePlayerData = games;
 				break;
+
+			// Set fourth button to issue sort by favorites
 			case 3:
+				sortOptionsButtons[i].addEventListener("click", sortGames);
+				sortOptionsButtons[i].sortParam = "favorites";
+				sortOptionsButtons[i].gamePlayerData = favoritedGames;
+				break;
+
+			// set fifth button to issue clear all sorting preferences
+			case 4:
 				sortOptionsButtons[i].addEventListener("click", sortGames);
 				sortOptionsButtons[i].sortParam = "clear";
 				sortOptionsButtons[i].gamePlayerData = games;
@@ -207,24 +235,28 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	}
 });
-// Your final submission should have much more data than this, and
-// you should use more than just an array of strings to store it all.
 
 // This function adds cards the page to display the data in the array
+// Function: showCards
+// Purpose: render HTML card elements based on the data set being passed in
+// Input: an array of game objects
 function showCards(inGames) {
 	const cardContainer = document.getElementById("card-container");
 	cardContainer.innerHTML = "";
 	const templateCard = document.querySelector(".card");
 
-	// Make a card for each game in the data array
-	// Start at 1 because index 0 is used for misc data
-	for (let i = 1; i < games.length; i++) {
+	// Make a card for each game in the incoming data array
+	// Start at 1 because index 0 is used for misc/meta data
+	for (let i = 1; i < inGames.length; i++) {
 		const nextCard = templateCard.cloneNode(true); // Copy the template card
-		editCardContent(nextCard, inGames[i]); // Edit title and image
+		editCardContent(nextCard, inGames[i]); // Add all related game details to each card
 		cardContainer.appendChild(nextCard); // Add new card to the container
 	}
 }
 
+// Function: editCardContent
+// Purpose: add HTML elements to each card and set the content of each elements
+// Input: a default card template, and a game object
 function editCardContent(card, gameInfo) {
 	card.addEventListener("click", toggleCardLinks);
 	card.style.display = "block";
@@ -241,6 +273,7 @@ function editCardContent(card, gameInfo) {
 
 	const cardBulletPoints = card.querySelectorAll(".card-data");
 
+	// Loop over each bullet point and set information to be displayed
 	for (let i = 0; i < cardBulletPoints.length; i++) {
 		switch (i) {
 			case 0:
@@ -259,7 +292,6 @@ function editCardContent(card, gameInfo) {
 				let percentage =
 					(gameInfo.players.current / games[0].active_players) * 100;
 				percentage = percentage.toFixed(2);
-
 				cardBulletPoints[i].textContent =
 					"% of Current Steam Users: " + percentage;
 				break;
@@ -284,36 +316,43 @@ function toggleSortOptions() {
 	}
 }
 
+// Function: sortGames
+// Purpose: Sort games in order determined by which sorting button was selected
+// Input: None
+// Output: Calls a re-render of cards to the screen
+// Special: Implements a selection sort algorithm - requires shallow copy of data
 function sortGames() {
+	// Stores sorting preference
 	let inSortBy = event.currentTarget.sortParam;
 
 	// Use a temporary copy of data to avoid modifying original data
 	// Copying large amounts of data is expensive -- but here it should be acceptable
-	// Given more time -- I would try and and extract only the relevant pieces of data
-	// so that I could pass a much smaller amount of data.
 	let inGameData = [...event.currentTarget.gamePlayerData];
 
 	// Create a tempory container to store sorted items
 	let tempGames = [];
 
-	console.log(inGameData);
-
+	// Execute sort based on stored preference
 	switch (event.currentTarget.sortParam) {
-		// sort by descending current player count - highest to lowest
+		// Sort by descending current player count - highest to lowest
 		case "players.current":
+			// Compare each element to the first element in the array
+			// Move on to the next and repeat comparison to new starting position
 			for (let i = 1; i < inGameData.length; i++) {
-				console.log(event.currentTarget.gamePlayerData[i].players.current);
 				tempGames[i] = inGameData[i];
 
 				for (let j = i + 1; j < inGameData.length; j++) {
+					// If starting element is less than next element
 					if (tempGames[i].players.current < inGameData[j].players.current) {
-						console.log(
-							tempGames[i].name + " is less than " + inGameData[j].name,
-						);
+						// Temporarily store current element
 						let temp = tempGames[i];
+
+						// Perform swap of elements position
 						tempGames[i] = inGameData[j];
 						inGameData[j] = temp;
-					} else {
+					}
+					// Advance to the next element
+					else {
 						continue;
 					}
 				}
@@ -323,16 +362,12 @@ function sortGames() {
 		// Sort by descending daily peak player count - highest to lowest
 		case "players.peak_daily":
 			for (let i = 1; i < inGameData.length; i++) {
-				console.log(inGameData[i].players.peak_daily);
 				tempGames[i] = inGameData[i];
 
 				for (let j = i + 1; j < inGameData.length; j++) {
 					if (
 						tempGames[i].players.peak_daily < inGameData[j].players.peak_daily
 					) {
-						console.log(
-							tempGames[i].name + " is less than " + inGameData[j].name,
-						);
 						let temp = tempGames[i];
 						tempGames[i] = inGameData[j];
 						inGameData[j] = temp;
@@ -343,11 +378,10 @@ function sortGames() {
 			}
 			break;
 
-		//Sort by descending all time peak player count - highest to lowest
+		// Sort by descending all time peak player count - highest to lowest
 		case "players.peak_all_time":
 			tempGames[0] = games[0];
 			for (let i = 1; i < inGameData.length; i++) {
-				console.log(inGameData[i].players.peak_all_time);
 				tempGames[i] = inGameData[i];
 
 				for (let j = i + 1; j < inGameData.length; j++) {
@@ -355,9 +389,6 @@ function sortGames() {
 						tempGames[i].players.peak_all_time <
 						inGameData[j].players.peak_all_time
 					) {
-						console.log(
-							tempGames[i].name + " is less than " + inGameData[j].name,
-						);
 						let temp = tempGames[i];
 						tempGames[i] = inGameData[j];
 						inGameData[j] = temp;
@@ -365,6 +396,14 @@ function sortGames() {
 						continue;
 					}
 				}
+			}
+			break;
+
+		// Only display games marked as "favorites" by the user
+		case "favorites":
+			tempGames[0] = inGameData[0];
+			for (let i = 1; i < favoritedGames.length; i++) {
+				tempGames[i] = inGameData[i];
 			}
 			break;
 		default:
@@ -374,36 +413,75 @@ function sortGames() {
 			}
 			break;
 	}
-	console.log(tempGames);
 
+	// Re-render the sorted/modified list of games
 	showCards(tempGames);
 }
 
+// Function: toggleCardLinks
+// Purpose:  Toggle visibility of card link container/buttons
+// Input: click event
+// Output: displays a menu over the face of the card with associated links
 function toggleCardLinks(event) {
-	let clickedCard = event.currentTarget.querySelector(".card-links");
-	let linkButtons = event.currentTarget.querySelectorAll("a");
-	let gameName = event.currentTarget.querySelector("h2").textContent;
+	// Store reference to necessary card elements
+	const clickedCard = event.currentTarget.querySelector(".card-links");
+	const linkButtons = event.currentTarget.querySelectorAll("a");
+	const gameName = event.currentTarget.querySelector("h2").textContent;
 
+	// Favorite button event listener added here in code.
+	const favoriteButton = event.currentTarget.querySelector(".favorite-button");
+	favoriteButton.addEventListener("click", addToFavorites);
+
+	// Set a-tag hrefs to proper links of the game that was clicked on
 	for (let i = 1; i < games.length; i++) {
 		if (games[i].name === gameName) {
-			console.log("Game found at index " + i);
 			linkButtons[0].href = games[i].steam_store_url;
 			linkButtons[1].href = games[i].steam_db_url;
-
 			break;
 		}
 	}
-	console.log(linkButtons);
-	console.log(gameName);
+
+	// If panel was displayed
 	if (clearContainerFlag) {
+		// Add pre-configured css display class
 		clickedCard.classList.add("inactive-display");
+
+		// Set display flag to false
 		clearContainerFlag = false;
 	} else {
+		// Remove pre=configured css class hiding the display
 		clickedCard.classList.remove("inactive-display");
+		// Set display flag to true
 		clearContainerFlag = true;
 	}
 }
 
+// Function: addToFavorites
+// Purpose: Check if the selected game is already a favorite
+//			Find the game in games data and add the associated object to favorites list
+// Input: click event
 function addToFavorites(event) {
-	favoritedGames;
+	// Store reference to clicked game name
+	const gameToAdd =
+		event.currentTarget.parentElement.parentElement.querySelector(
+			"h2",
+		).textContent;
+
+	// Create boolean to check if the game is already in favoritedGames
+	const existingFavorite = favoritedGames.some(
+		(game) => game.name === gameToAdd,
+	);
+
+	// If the game is a valid game in game data, check if existing boolean is true or false
+	for (let i = 1; i < games.length; i++) {
+		if (games[i].name === gameToAdd) {
+			// If existing item boolean is true, dont add another object
+			if (existingFavorite) {
+				break;
+			}
+			// If existing item boolean is false, add favorited game.
+			favoritedGames[favoritedGames.length] = games[i];
+			break;
+		}
+	}
 }
