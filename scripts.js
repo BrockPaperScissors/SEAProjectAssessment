@@ -23,9 +23,12 @@
  *
  */
 
-let sortOptionsActive = false;
-let sortOptions = [];
-let sortOptionsButtons = [];
+let sortOptionsActiveFlag = false;
+let clearContainerFlag = false;
+let sortOptions;
+let sortOptionsButtons;
+let linkPanel;
+let favoritedGames;
 
 // Game data snapshot 4/17/2026
 let games = [
@@ -42,6 +45,8 @@ let games = [
 			peak_daily: 1399032,
 			peak_all_time: 1862531,
 		},
+		steam_db_url: "https://steamdb.info/app/730/charts/",
+		steam_store_url: "https://store.steampowered.com/app/730/CounterStrike_2/",
 	},
 	{
 		name: "Dota 2",
@@ -53,6 +58,8 @@ let games = [
 			peak_daily: 626460,
 			peak_all_time: 1295114,
 		},
+		steam_db_url: "https://steamdb.info/app/570/charts/",
+		steam_store_url: "https://store.steampowered.com/app/570/Dota_2/",
 	},
 	{
 		name: "FiveM",
@@ -64,6 +71,9 @@ let games = [
 			peak_daily: 192794,
 			peak_all_time: 215265,
 		},
+		steam_db_url: "https://steamdb.info/app/2676230/charts/",
+		steam_store_url:
+			"https://store.steampowered.com/app/3240220/Grand_Theft_Auto_V_Enhanced/",
 	},
 	{
 		name: "PUBG: BATTLEGROUNDS",
@@ -75,6 +85,9 @@ let games = [
 			peak_daily: 864354,
 			peak_all_time: 3257248,
 		},
+		steam_db_url: "https://steamdb.info/app/578080/charts/",
+		steam_store_url:
+			"https://store.steampowered.com/app/578080/PUBG_BATTLEGROUNDS/",
 	},
 	{
 		name: "Slay the Spire 2",
@@ -86,6 +99,9 @@ let games = [
 			peak_daily: 286089,
 			peak_all_time: 574638,
 		},
+		steam_db_url: "https://steamdb.info/app/2868840/charts/",
+		steam_store_url:
+			"https://store.steampowered.com/app/2868840/Slay_the_Spire_2/",
 	},
 	{
 		name: "Windrose",
@@ -97,6 +113,8 @@ let games = [
 			peak_daily: 135700,
 			peak_all_time: 135700,
 		},
+		steam_db_url: "https://steamdb.info/app/3041230/charts/",
+		steam_store_url: "https://store.steampowered.com/app/3041230/Windrose/",
 	},
 	{
 		name: "Rust",
@@ -108,6 +126,8 @@ let games = [
 			peak_daily: 158709,
 			peak_all_time: 262284,
 		},
+		steam_db_url: "https://steamdb.info/app/252490/charts/",
+		steam_store_url: "https://store.steampowered.com/app/252490/Rust/",
 	},
 	{
 		name: "Marvel Rivals",
@@ -119,6 +139,9 @@ let games = [
 			peak_daily: 116199,
 			peak_all_time: 644269,
 		},
+		steam_db_url: "https://steamdb.info/app/2767030/charts/",
+		steam_store_url:
+			"https://store.steampowered.com/app/2767030/Marvel_Rivals/",
 	},
 	{
 		name: "Crimson Desert",
@@ -130,6 +153,9 @@ let games = [
 			peak_daily: 112952,
 			peak_all_time: 276261,
 		},
+		steam_db_url: "https://steamdb.info/app/3321460/charts/",
+		steam_store_url:
+			"https://store.steampowered.com/app/3321460/Crimson_Desert/",
 	},
 	{
 		name: "ARC Raiders",
@@ -141,8 +167,46 @@ let games = [
 			peak_daily: 98844,
 			peak_all_time: 481966,
 		},
+		steam_db_url: "https://steamdb.info/app/1808500/charts/",
+		steam_store_url: "hhttps://store.steampowered.com/app/1808500/ARC_Raiders/",
 	},
 ];
+
+//This calls the addCards() function when the page is first loaded
+// Added: Once page is loaded -- safely adds event listeners to the sorting buttons
+document.addEventListener("DOMContentLoaded", function () {
+	showCards(games);
+	sortOptions = document.querySelector(".sort-options-container");
+	sortOptionsButtons = document.querySelectorAll(".sort-by-button");
+	// linkPanel = document.getElementById();
+
+	for (let i = 0; i < sortOptionsButtons.length; i++) {
+		switch (i) {
+			case 0:
+				sortOptionsButtons[i].addEventListener("click", sortGames);
+				sortOptionsButtons[i].sortParam = "players.current";
+				sortOptionsButtons[i].gamePlayerData = games;
+				break;
+			case 1:
+				sortOptionsButtons[i].addEventListener("click", sortGames);
+				sortOptionsButtons[i].sortParam = "players.peak_daily";
+				sortOptionsButtons[i].gamePlayerData = games;
+				break;
+			case 2:
+				sortOptionsButtons[i].addEventListener("click", sortGames);
+				sortOptionsButtons[i].sortParam = "players.peak_all_time";
+				sortOptionsButtons[i].gamePlayerData = games;
+				break;
+			case 3:
+				sortOptionsButtons[i].addEventListener("click", sortGames);
+				sortOptionsButtons[i].sortParam = "clear";
+				sortOptionsButtons[i].gamePlayerData = games;
+				break;
+			default:
+				break;
+		}
+	}
+});
 // Your final submission should have much more data than this, and
 // you should use more than just an array of strings to store it all.
 
@@ -162,6 +226,7 @@ function showCards(inGames) {
 }
 
 function editCardContent(card, gameInfo) {
+	card.addEventListener("click", toggleCardLinks);
 	card.style.display = "block";
 
 	const cardHeader = card.querySelector("h2");
@@ -196,66 +261,39 @@ function editCardContent(card, gameInfo) {
 				percentage = percentage.toFixed(2);
 
 				cardBulletPoints[i].textContent =
-					"% of Current Steam Users: " + String(percentage);
+					"% of Current Steam Users: " + percentage;
 				break;
 			default:
 				break;
 		}
 	}
-
-	// You can use console.log to help you debug!
-	// View the output by right clicking on your website,
-	// select "Inspect", then click on the "Console" tab
-	// console.log("new card:", gameInfo.name, "- html: ", card);
 }
 
-// This calls the addCards() function when the page is first loaded
-document.addEventListener("DOMContentLoaded", function () {
-	showCards(games);
-	sortOptions = document.getElementById("sort-options-container");
-	sortOptionsButtons = document.getElementsByClassName("sort-by-button");
-
-	for (let i = 0; i < sortOptionsButtons.length; i++) {
-		switch (i) {
-			case 0:
-				sortOptionsButtons[i].addEventListener("click", sortGames);
-				sortOptionsButtons[i].sortParam = "players.current";
-				sortOptionsButtons[i].gamePlayerData = games;
-				break;
-			case 1:
-				sortOptionsButtons[i].addEventListener("click", sortGames);
-				sortOptionsButtons[i].sortParam = "players.peak_daily";
-				sortOptionsButtons[i].gamePlayerData = games;
-				break;
-			case 2:
-				sortOptionsButtons[i].addEventListener("click", sortGames);
-				sortOptionsButtons[i].sortParam = "players.peak_all_time";
-				sortOptionsButtons[i].gamePlayerData = games;
-				break;
-			case 3:
-				sortOptionsButtons[i].addEventListener("click", sortGames);
-				sortOptionsButtons[i].sortParam = "clear";
-				sortOptionsButtons[i].gamePlayerData = games;
-				break;
-			default:
-				break;
-		}
-	}
-});
-
-function displaySortOptions() {
-	if (sortOptionsActive) {
+// Function: displaySortOptions
+// Purpose: toggle visibilty of the sorting by adding/removing pre-defined CSS class
+function toggleSortOptions() {
+	// Check if sort options are already being displayed
+	if (sortOptionsActiveFlag) {
+		// Turn them off
 		sortOptions.classList.add("inactive-display");
-		sortOptionsActive = false;
+		sortOptionsActiveFlag = false;
 	} else {
-		sortOptionsActive = true;
+		// Turn them on
+		sortOptionsActiveFlag = true;
 		sortOptions.classList.remove("inactive-display");
 	}
 }
 
 function sortGames() {
 	let inSortBy = event.currentTarget.sortParam;
+
+	// Use a temporary copy of data to avoid modifying original data
+	// Copying large amounts of data is expensive -- but here it should be acceptable
+	// Given more time -- I would try and and extract only the relevant pieces of data
+	// so that I could pass a much smaller amount of data.
 	let inGameData = [...event.currentTarget.gamePlayerData];
+
+	// Create a tempory container to store sorted items
 	let tempGames = [];
 
 	console.log(inGameData);
@@ -339,4 +377,33 @@ function sortGames() {
 	console.log(tempGames);
 
 	showCards(tempGames);
+}
+
+function toggleCardLinks(event) {
+	let clickedCard = event.currentTarget.querySelector(".card-links");
+	let linkButtons = event.currentTarget.querySelectorAll("a");
+	let gameName = event.currentTarget.querySelector("h2").textContent;
+
+	for (let i = 1; i < games.length; i++) {
+		if (games[i].name === gameName) {
+			console.log("Game found at index " + i);
+			linkButtons[0].href = games[i].steam_store_url;
+			linkButtons[1].href = games[i].steam_db_url;
+
+			break;
+		}
+	}
+	console.log(linkButtons);
+	console.log(gameName);
+	if (clearContainerFlag) {
+		clickedCard.classList.add("inactive-display");
+		clearContainerFlag = false;
+	} else {
+		clickedCard.classList.remove("inactive-display");
+		clearContainerFlag = true;
+	}
+}
+
+function addToFavorites(event) {
+	favoritedGames;
 }

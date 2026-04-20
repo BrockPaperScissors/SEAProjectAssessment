@@ -12,12 +12,15 @@
 
 	<body>
 		<header class="main-header">
-			<h1 class="title">Steam Games & Player Count Data</h1>
+			<h1 class="title">Steam Games: Player Count Data</h1>
 		</header>
 		<div class="sort-bar">
-			<button onclick="displaySortOptions()">Sort Games</button>
+			<button onclick="toggleSortOptions()">Sort Games</button>
 
-			<div id="sort-options-container" class="inactive-display">
+			<div
+				id="sort-options-container"
+				class="sort-options-container inactive-display"
+			>
 				<nav>
 					<ul class="sort-buttons">
 						<li class="sort-by-button">
@@ -50,6 +53,14 @@
 					<li class="card-data">Bullet Point 3</li>
 				</ul>
 			</div>
+			<div class="card-links inactive-display">
+				<a class="link-tag" href="">Visit Steam Page</a>
+				<a class="link-tag" href="">Visit SteamDB Page</a>
+				<button class="link-tag" onclick="addToFavorites()">
+					Add To Favorites
+				</button>
+			</div>
 		</div>
+		<div class="footer"></div>
 	</body>
 </html>
